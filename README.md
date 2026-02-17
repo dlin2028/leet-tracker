@@ -91,6 +91,7 @@ Per-category ratings track your problem-solving skill using the Glicko-2 algorit
 - **Time decay:** RD increases with inactivity, reflecting skill rust
 
 **Rating ranges:**
+
 - **~800-1300:** Beginner / Easy problems
 - **~1500-1700:** Medium difficulty proficiency
 - **~1700-1900:** Medium-Hard proficiency
@@ -98,6 +99,7 @@ Per-category ratings track your problem-solving skill using the Glicko-2 algorit
 - **~2200+:** Expert level
 
 **Goal profiles** use rating targets to track interview preparation:
+
 - **Default (1800-1900):** Interview-ready proficiency with high success rate on most problems
 - **Amazon (1500-1700):** OA and screening-focused preparation
 - **Google (1700-1900):** Advanced algorithm-heavy interview preparation

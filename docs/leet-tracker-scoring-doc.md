@@ -34,12 +34,14 @@ Leet Tracker uses **two complementary systems** to measure your progress:
 **Purpose:** Confidence-weighted mastery visualization for recommendations and progress tracking.
 
 This is the system described in detail below. It produces a 0-1 score for each category based on:
+
 - Weighted solve quality (adjusted by attempts)
 - Recency decay (90-day linear)
 - Difficulty weighting
 - Confidence level (based on evidence volume)
 
 **Use cases:**
+
 - Driving the recommendation engine (Fundamentals, Refresh, New)
 - Visualizing category mastery as a percentage
 - Identifying weak areas that need practice
@@ -49,23 +51,26 @@ This is the system described in detail below. It produces a 0-1 score for each c
 **Purpose:** Skill level tracking and goal setting using a robust statistical rating system.
 
 Glicko-2 is an extension of the Elo rating system that adds:
+
 - **Rating (μ):** Mean skill estimate (default: 1500)
 - **Rating Deviation (RD):** Uncertainty in the rating (decreases with more solves, increases with inactivity)
 - **Volatility (σ):** Expected rating fluctuation
 
 **Rating ranges:**
+
 - **~800-1300:** Beginner / Easy problems
 - **~1500-1700:** Medium difficulty proficiency
-- **~1700-1900:** Medium-Hard proficiency  
+- **~1700-1900:** Medium-Hard proficiency
 - **~1900-2200:** Hard problem proficiency
 - **~2200+:** Expert level
 
 **Use cases:**
+
 - Goal profiles (e.g., "Amazon" targets 1700 for key categories)
 - Tracking skill progression over time
 - Comparing your skill level against problem difficulties
 
-**Relationship:** Progress scores help you know *what* to practice, while ratings tell you *how skilled* you are.
+**Relationship:** Progress scores help you know _what_ to practice, while ratings tell you _how skilled_ you are.
 
 ---
 
