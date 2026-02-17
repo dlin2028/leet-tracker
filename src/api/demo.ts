@@ -145,6 +145,7 @@ export async function syncDemoSolves(db: {
   console.log('[syncDemoSolves] Loading fresh demo solves...');
   const demoSolves = await loadDemoSolves();
   let savedCount = 0;
+  const enrichedSolves: Solve[] = []; // Track for rating updates
 
   // Enrich and save demo solves to database
   for (const solve of demoSolves) {
@@ -167,7 +168,20 @@ export async function syncDemoSolves(db: {
     };
 
     await db.saveSolve(enrichedSolve);
+    enrichedSolves.push(enrichedSolve);
     savedCount++;
+  }
+
+  // Update ratings for demo user if we added new solves
+  if (enrichedSolves.length > 0) {
+    try {
+      const DEMO_USERNAME = import.meta.env.VITE_DEMO_USERNAME;
+      const { updateRatingsFromSolves } = await import('../domain/ratingSyncIntegration');
+      await updateRatingsFromSolves(DEMO_USERNAME, enrichedSolves);
+    } catch (error) {
+      console.error('[syncDemoSolves] Failed to update ratings:', error);
+      // Don't throw - rating updates are non-critical
+    }
   }
 
   console.log(`[syncDemoSolves] Demo solves processed: ${savedCount} new solves saved`);

@@ -3,6 +3,8 @@ import { identifyUser } from '@/utils/analytics';
 import { syncSolveData } from './syncSolveData';
 import { syncProblemCatalog } from './syncProblemCatalog';
 import { loadRatings } from './problemRatings';
+import { hasRatings } from '../storage/ratings';
+import { initializeRatingsFromHistory } from './historicalRatingEstimation';
 
 /**
  * Initialize the app on startup.
@@ -54,6 +56,39 @@ export async function initApp(): Promise<{
       console.warn('[initApp] Failed to sync solve data', err);
       errors.push('An unexpected error occurred while loading solve data.');
     }
+  }
+
+  // Initialize ratings if needed (estimate from history for existing users)
+  try {
+    const userHasRatings = await hasRatings(username);
+
+    if (!userHasRatings) {
+      console.log('[initApp] No ratings found, checking solve history...');
+
+      // Get all solves to check if we should estimate ratings
+      const allSolves = await db.getAllSolves();
+      const acceptedSolves = allSolves.filter((s) => s.status === 'Accepted');
+
+      if (acceptedSolves.length >= 5) {
+        console.log(
+          `[initApp] Found ${acceptedSolves.length} accepted solves, initializing ratings from history...`,
+        );
+
+        // Get all problems for initialization
+        const allProblems = await db.getAllProblems();
+        const problemMap = new Map(allProblems.map((p) => [p.slug, p]));
+
+        // Initialize ratings from history (processes each solve as tie, saves internally)
+        await initializeRatingsFromHistory(username, allSolves, problemMap);
+
+        console.log('[initApp] Ratings initialized from historical solves');
+      } else {
+        console.log('[initApp] Not enough solves for rating estimation, will need calibration');
+      }
+    }
+  } catch (err) {
+    console.error('[initApp] Failed to initialize ratings:', err);
+    // Non-critical error, don't add to errors array
   }
 
   // Identify user for analytics (no profileId needed)
